@@ -1,6 +1,6 @@
 # Course API for Automation of Bootcamp Cohort
 
-This .NET project aims to provide a streamlined API for managing courses within a bootcamp environment. The API facilitates the automation of registering students into various bootcamp courses effortlessly.
+This .NET project aims to provide a streamlined API for managing courses for a bootcamp cohort. The API facilitates the automation of registering students into various bootcamp courses effortlessly.
 
 
 ## Features
