@@ -1,4 +1,4 @@
-# Course API for Automation of Bootcamp Cohort Year
+# Course API for Automation of Bootcamp Cohort
 
 This .NET project aims to provide a streamlined API for managing courses within a bootcamp environment. The API facilitates the automation of registering students into various bootcamp courses effortlessly.
 
@@ -47,12 +47,17 @@ update-database
 dotnet run
 ```
 
-6. Explore the API: Navigate to https://localhost:****/swagger in your preferred web browser to access the Swagger UI and explore the API endpoints.
+6. Explore the API: Navigate to https://localhost:44306/swagger in your preferred web browser to access the Swagger UI and explore the API endpoints.
 ## API Endpoints
 
-The API provides the following endpoints for managing courses and registering students:
+The API provides the following endpoints for managing courses:
 
-- 
+- `GET` /api/courses: Retrieves a list of all courses in the bootcamp.
+- `GET` /api/courses/{id}: Retrieve the details of a specific course by its ID.
+- `POST` /api/courses: Create a new bootcamp course.
+- `PUT` /api/courses/{id}: Update an existing course.
+- `DELETE` /api/courses/{id}: Delete a course by ID.
+
 ## License
 
 This project is licensed under the [MIT](https://choosealicense.com/licenses/mit/) License. 

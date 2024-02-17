@@ -1,7 +1,5 @@
 using Courses.Data;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Courses
 {
@@ -12,6 +10,7 @@ namespace Courses
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
             builder.Services.AddDbContext<CoursesDbContext>( options =>
             {
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:Default"]);
@@ -34,7 +33,6 @@ namespace Courses
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
