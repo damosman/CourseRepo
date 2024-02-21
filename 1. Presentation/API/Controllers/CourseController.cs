@@ -1,10 +1,10 @@
-﻿
-using Courses.Data;
-using Courses.Entities;
+﻿using Courses.Entities;
+using Courses.Repositories.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
-namespace Courses.Controllers
+namespace Courses.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -12,8 +12,7 @@ namespace Courses.Controllers
     {
         private readonly CoursesDbContext _context;
 
-
-        public CoursesController(CoursesDbContext context)
+        public CoursesController(CoursesDbContext context, ILogger<CoursesController>  logger)
         {
             _context = context;
         }
@@ -24,20 +23,23 @@ namespace Courses.Controllers
         {
             var courses = await _context.Courses.ToListAsync();
             var Courses = courses.Select(c => new Course { Id = c.Id, Name = c.Name }).ToList();
+            Log.Information($"The courses available are {@Courses}");
             return Ok(Courses);
         }
 
         // GET: api/courses/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourse(int id)
+        public async Task<ActionResult<Course>> GetCourse(int id, Exception exception)
         {
             var course = await _context.Courses.FindAsync(id);
 
             if (course == null)
             {
+                Log.Error(exception: exception, $"The {@course} is not available, Try again.");
                 return NotFound();
             }
 
+            Log.Information($"The course information is {@course}");
             return Ok(course); ;
         }
 
@@ -48,6 +50,7 @@ namespace Courses.Controllers
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
+            Log.Information($"A new {@course} has been added to the bootcamp");
             return CreatedAtAction(nameof(GetCourse), new { id = course.Id }, course);
         }
 
@@ -57,6 +60,7 @@ namespace Courses.Controllers
         {
             if (id != course.Id)
             {
+                Log.Error($"The id:{@id} is incorrect, Enter a valid course id again.");
                 return BadRequest();
             }
 
@@ -70,14 +74,17 @@ namespace Courses.Controllers
             {
                 if (!CourseExists(id))
                 {
+                    Log.Error($"The id:{@id} cannot be found, Enter the course id again.");
                     return NotFound();
                 }
                 else
                 {
+                    Log.Information($"The {@course} has been updated.");
                     throw;
                 }
             }
 
+            Log.Information($"The {@course} is not updated.");
             return NoContent();
         }
 
@@ -88,12 +95,14 @@ namespace Courses.Controllers
             var course = await _context.Courses.FindAsync(id);
             if (course == null)
             {
+                Log.Error($"The id:{@id} cannot be found, Enter the course id again.");
                 return NotFound();
             }
 
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
 
+            Log.Information($"The {@course} has been deleted.");
             return NoContent();
         }
 

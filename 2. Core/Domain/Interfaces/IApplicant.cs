@@ -16,15 +16,15 @@
 
         string? Nationality { get; set; }
 
+        DateTime DateOfBirth { get; set; }
+
+        int GroupId { get; set; }
+
         string? StreetName { get; set; }
 
         string? City { get; set; }
 
         string? Country { get; set; }
-
-        string? CurrentDevSkill { get; set; }
-
-        string? EmploymentStatus { get; set; }
 
     }
 }

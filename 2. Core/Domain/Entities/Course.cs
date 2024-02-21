@@ -1,6 +1,4 @@
 ﻿using Courses.Services;
-using System;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace Courses.Entities
 {
@@ -19,6 +17,5 @@ namespace Courses.Entities
         public string? CreatedBy { get; set; }
 
         public string? ModifiedBy { get; set; }
-
     }
 }

@@ -20,15 +20,19 @@ namespace Courses.Entities
 
         public string? Nationality { get; set; }
 
+        public DateTime DateOfBirth { get; set; }
+
+        public int GroupId { get; set; }
+
+        public List<string>? ExistingDevSkill { get; set; } = new List<string>();
+
+        public List<string>? EmploymentStatus { get; set; } = new List<string>();
+
         public string? StreetName { get; set; }
 
         public string? City { get; set; }
 
         public string? Country { get; set; }
-
-        public string? CurrentDevSkill { get; set; }
-
-        public string? EmploymentStatus { get; set; }
 
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
 

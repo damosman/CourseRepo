@@ -1,19 +1,40 @@
-using Courses.Data;
+using Courses.Repositories.Data;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
+using System.Diagnostics;
 
 namespace Courses
 {
     public class Program
     {
+        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+        .Build();
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Configures Serilog to write logs to SQL Server
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .CreateLogger();
 
-            builder.Services.AddDbContext<CoursesDbContext>( options =>
+            // Enables Serilog debugging to surface errors if logging fails
+            Serilog.Debugging.SelfLog.Enable(msg =>
             {
-                options.UseSqlServer(builder.Configuration["ConnectionStrings:Default"]);
+                Debug.Print(msg);
+                Debugger.Break();
+            });
+
+            // Add services to the container.
+            builder.Services.AddDbContext<CoursesDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
             });
 
             builder.Services.AddControllers();
@@ -28,6 +49,11 @@ namespace Courses
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
