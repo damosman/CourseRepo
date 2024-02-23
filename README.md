@@ -36,6 +36,9 @@ dotnet restore
 3. Database Configuration: Configure the database connection string in the `appsettings.json` file to connect to your preferred database provider.
 
 4. Database Migrations: Apply database migrations to create the necessary tables in the database.
+```bash
+add-migration InitialCreate
+```
 
 ```bash
 update-database
