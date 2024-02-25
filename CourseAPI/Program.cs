@@ -1,40 +1,19 @@
-using Courses.Domain.Interfaces;
+using Courses.Repository;
 using Courses.Repositories.Data;
-using Courses.Repository.Implementations;
-using Courses.Services.Contracts;
+using Courses.Services;
 using Courses.Services.Contracts.Course;
-using Courses.Services.Implementations;
-using Courses.Services.Interfaces;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using System.Diagnostics;
+using Courses.API.Logs;
 
 namespace Courses
 {
     public class Program
     {
-        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-        .Build();
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configures Serilog to write logs to SQL Server
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .CreateLogger();
-
-            // Enables Serilog debugging to surface errors if logging fails
-            Serilog.Debugging.SelfLog.Enable(msg =>
-            {
-                Debug.Print(msg);
-                Debugger.Break();
-            });
+            LoggerConfigurationSetup.SetupLogger();
 
             // Add services to the container.
             builder.Services.AddDbContext<CoursesDbContext>(options =>
@@ -42,10 +21,10 @@ namespace Courses
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
             });
 
-            builder.Services.AddScoped<ICoursesRepository, CoursesRepository>();
-            builder.Services.AddScoped<ICourseService, CourseService>();
-            builder.Services.AddScoped<IValidator<CourseCreateReq>, CourseCreateReqValidator>();
-            builder.Services.AddScoped<IValidator<CourseUpdateReq>, CourseUpdateReqValidator>();
+            builder.Services.AddRepository()
+                            .AddServices()
+                            .AddCreateReq()
+                            .UpdateCreateReq();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,4 +1,5 @@
 ﻿using Courses.Entities;
+using Courses.Repository.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -12,31 +13,11 @@ namespace Courses.Repositories.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
-                .Entity<Applicant>()
-                .Property(l => l.ExistingDevSkill)
-                .HasConversion(
-                    eds => string.Join(",", eds),
-                    dbVal => dbVal.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList(),
-                    new ValueComparer<List<string>>(
-                        (c1, c2) => c1.SequenceEqual(c2),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToList()
-                    )
-                );
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder
-                .Entity<Applicant>()
-                .Property(l => l.EmploymentStatus)
-                .HasConversion(
-                    es => string.Join(",", es),
-                    dbVal => dbVal.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList(),
-                    new ValueComparer<List<string>>(
-                        (c1, c2) => c1.SequenceEqual(c2),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToList()
-                    )
-                );
+            // Applys configuration from Configuration classes
+            modelBuilder.ApplyConfiguration(new CourseConfiguration());
+            modelBuilder.ApplyConfiguration(new ApplicantConfiguration());
         }
 
         public override int SaveChanges()

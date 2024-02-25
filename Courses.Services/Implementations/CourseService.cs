@@ -2,7 +2,6 @@
 using Courses.Services.Contracts;
 using Courses.Services.Extension;
 using Courses.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace Courses.Services.Implementations
 {
