@@ -33,5 +33,7 @@ namespace Courses.Entities
         public string City { set; get; } = string.Empty;
 
         public string Country { set; get; } = string.Empty;
+
+        public ICollection<Course>? Course { set; get; }
     }
 }
